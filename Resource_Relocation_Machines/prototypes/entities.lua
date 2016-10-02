@@ -14,7 +14,7 @@ return
     {
         type = "inserter",
         name = "rrm-range" .. inputs.range .."-building",
-        icon = "__Resource_Relocation_Machine__/graphics/Range" .. inputs.range .. "-Icon.png",
+        icon = "__Resource_Relocation_Machines__/graphics/Range" .. inputs.range .. "-Icon.png",
         flags = {"placeable-neutral", "placeable-player", "player-creation"},
         minable = {hardness = 0.2, mining_time = 0.5, result = "rrm-range10"},
         max_health = 250,
@@ -34,7 +34,7 @@ return
         platform_picture =
         {
             north = {
-                filename = "__Resource_Relocation_Machine__/graphics/Range" .. inputs.range .. "-Active-N.png",
+                filename = "__Resource_Relocation_Machines__/graphics/Range" .. inputs.range .. "-Active-N.png",
                 priority = "high",
                 width = 32,
                 height = 32,
@@ -42,7 +42,7 @@ return
                 shift = {0, 0},
             },
             east = {
-                filename = "__Resource_Relocation_Machine__/graphics/Range" .. inputs.range .. "-Active-E.png",
+                filename = "__Resource_Relocation_Machines__/graphics/Range" .. inputs.range .. "-Active-E.png",
                 priority = "high",
                 width = 32,
                 height = 32,
@@ -50,7 +50,7 @@ return
                 shift = {0, 0},
             },
             south = {
-                filename = "__Resource_Relocation_Machine__/graphics/Range" .. inputs.range .. "-Active-S.png",
+                filename = "__Resource_Relocation_Machines__/graphics/Range" .. inputs.range .. "-Active-S.png",
                 priority = "high",
                 width = 32,
                 height = 32,
@@ -58,7 +58,7 @@ return
                 shift = {0, 0},
             },
             west = {
-                filename = "__Resource_Relocation_Machine__/graphics/Range" .. inputs.range .. "-Active-W.png",
+                filename = "__Resource_Relocation_Machines__/graphics/Range" .. inputs.range .. "-Active-W.png",
                 priority = "high",
                 width = 32,
                 height = 32,
@@ -137,7 +137,7 @@ return
     {
     type = "constant-combinator",
     name = "rrm-range" .. inputs.range .."-building",
-    icon = "__Resource_Relocation_Machine__/graphics/Range" .. inputs.range .. "-Icon.png",
+    icon = "__Resource_Relocation_Machines__/graphics/Range" .. inputs.range .. "-Icon.png",
     flags = {"placeable-neutral", "player-creation"},
     minable = {hardness = 0.2, mining_time = 0.5, result = "rrm-range10"},
     max_health = 50,
@@ -151,7 +151,7 @@ return
     sprites =
     {   -- Note that this version inverts the directions.
         north = {
-            filename = "__Resource_Relocation_Machine__/graphics/Range" .. inputs.range .. "-Active-S.png",
+            filename = "__Resource_Relocation_Machines__/graphics/Range" .. inputs.range .. "-Active-S.png",
             priority = "high",
             width = 32,
             height = 32,
@@ -159,7 +159,7 @@ return
             shift = {0, 0},
         },
         east = {
-            filename = "__Resource_Relocation_Machine__/graphics/Range" .. inputs.range .. "-Active-W.png",
+            filename = "__Resource_Relocation_Machines__/graphics/Range" .. inputs.range .. "-Active-W.png",
             priority = "high",
             width = 32,
             height = 32,
@@ -167,7 +167,7 @@ return
             shift = {0, 0},
         },
         south = {
-            filename = "__Resource_Relocation_Machine__/graphics/Range" .. inputs.range .. "-Active-N.png",
+            filename = "__Resource_Relocation_Machines__/graphics/Range" .. inputs.range .. "-Active-N.png",
             priority = "high",
             width = 32,
             height = 32,
@@ -175,7 +175,7 @@ return
             shift = {0, 0},
         },
         west = {
-            filename = "__Resource_Relocation_Machine__/graphics/Range" .. inputs.range .. "-Active-E.png",
+            filename = "__Resource_Relocation_Machines__/graphics/Range" .. inputs.range .. "-Active-E.png",
             priority = "high",
             width = 32,
             height = 32,
@@ -299,7 +299,7 @@ return
   {
     type = "decider-combinator",
     name = "rrm-range" .. inputs.range .."-building",
-    icon = "__Resource_Relocation_Machine__/graphics/Range" .. inputs.range .. "-Icon.png",
+    icon = "__Resource_Relocation_Machines__/graphics/Range" .. inputs.range .. "-Icon.png",
     flags = {"placeable-neutral", "player-creation"},
     minable = {hardness = 0.2, mining_time = 0.5, result = "rrm-range10"},
     max_health = 50,
@@ -317,7 +317,7 @@ return
     sprites =
     {   -- Note that this version inverts the directions.
         north = {
-            filename = "__Resource_Relocation_Machine__/graphics/Range" .. inputs.range .. "-Active-S.png",
+            filename = "__Resource_Relocation_Machines__/graphics/Range" .. inputs.range .. "-Active-S.png",
             priority = "high",
             width = 32,
             height = 32,
@@ -325,7 +325,7 @@ return
             shift = {0, 0},
         },
         east = {
-            filename = "__Resource_Relocation_Machine__/graphics/Range" .. inputs.range .. "-Active-W.png",
+            filename = "__Resource_Relocation_Machines__/graphics/Range" .. inputs.range .. "-Active-W.png",
             priority = "high",
             width = 32,
             height = 32,
@@ -333,7 +333,7 @@ return
             shift = {0, 0},
         },
         south = {
-            filename = "__Resource_Relocation_Machine__/graphics/Range" .. inputs.range .. "-Active-N.png",
+            filename = "__Resource_Relocation_Machines__/graphics/Range" .. inputs.range .. "-Active-N.png",
             priority = "high",
             width = 32,
             height = 32,
@@ -341,7 +341,7 @@ return
             shift = {0, 0},
         },
         west = {
-            filename = "__Resource_Relocation_Machine__/graphics/Range" .. inputs.range .. "-Active-E.png",
+            filename = "__Resource_Relocation_Machines__/graphics/Range" .. inputs.range .. "-Active-E.png",
             priority = "high",
             width = 32,
             height = 32,
