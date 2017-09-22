@@ -106,7 +106,7 @@ end
 -- Returns 2 position tables
 -- takes the RRM, a direction, and an offset
 -- Gets the Position from the passed RRM
--- Uses a hardcoded 1 tile-ish area size (for now)
+-- Uses a hard coded 1 tile-ish area size (for now)
 function searchArea(RRM, direction, offset)
     local areaMod = 0.4 -- Because positions are centers
     
