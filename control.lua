@@ -27,9 +27,7 @@ end
 -- Do "sensible things" about newly placed RRMs
 function builtEntity(event) -- Done AFAIK
     if event.created_entity.name == "rrm-range10-building" or event.created_entity.name == "rrm-range20-building" or event.created_entity.name == "rrm-range30-building" then
-        if myDebug == true then
-            event.created_entity.surface.print("builtEntity fired")
-        end
+        if myDebug == true then event.created_entity.surface.print("builtEntity fired") end
         if global.RRMs == nil then -- Guard against empty/missing table
           global.RRMs = {} -- Create the table (Only place this happens)
           script.on_event(defines.events.on_tick, ticker)
