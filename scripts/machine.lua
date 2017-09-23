@@ -2,6 +2,8 @@ local helper = require "helper"
 
 local machine = {}
 
+-- Todo: Make functions local
+
 -- Performance Queue Notes:
 -- Rework this function to take a Bucket table
 -- Refactor machine class specific stuff into seperate function

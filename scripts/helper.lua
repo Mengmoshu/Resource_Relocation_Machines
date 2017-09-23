@@ -1,5 +1,7 @@
 local helper = {}
 
+-- Todo: make functions local
+
 -- Returns 2 position tables
 -- takes the RRM, a direction, and an offset
 -- Gets the Position from the passed RRM
