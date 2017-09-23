@@ -1,12 +1,16 @@
+local helper = require "helper"
+
+local machine = {}
+
 -- Performance Queue Notes:
 -- Rework this function to take a Bucket table
 -- Refactor machine class specific stuff into seperate function
 -- Rename this function to processMachines(bucket)
-function processRRMs()
+function machine.processRRMs()
     for k, RRM in pairs(global.RRMs) do
     
         if RRM.valid then -- Check to see if the RRM is there
-            local range = setRange(RRM.name)
+            local range = machine.setRange(RRM.name)
             local infront = RRM.direction
             local behind = (RRM.direction + 4) % 8
             local signal = nil
@@ -18,7 +22,7 @@ function processRRMs()
             
             -- Search behind RRM for ore
             for k = 1, range + 1 do
-                test = RRM.surface.find_entities_filtered({area = {searchArea(RRM, behind, k)}, type = "resource"}) -- Tile for ore
+                test = RRM.surface.find_entities_filtered({area = {helper.searchArea(RRM, behind, k)}, type = "resource"}) -- Tile for ore
                 if test ~= nil then -- If the list is not empty something was found, time to work
                     for k, xx in pairs(test) do -- Iterate over the (Hopefully small) list of found resources
                         if xx.name ~= "crude-oil" then -- We don't relocate oil patches
@@ -36,9 +40,9 @@ function processRRMs()
             if signal ~= nil then
                 -- Find suitable destination
                 for n = 1, range + 1 do
-                    dest = RRM.surface.find_entities_filtered({area = {searchArea(RRM, infront, n)}, type = "resource"}) -- We only need there to be no entities of type "resource"
+                    dest = RRM.surface.find_entities_filtered({area = {helper.searchArea(RRM, infront, n)}, type = "resource"}) -- We only need there to be no entities of type "resource"
                     if next(dest) == nil then
-                        signal.teleport({searchDirection(RRM, infront, n).x, searchDirection(RRM, infront, n).y})
+                        signal.teleport({helper.searchDirection(RRM, infront, n).x, helper.searchDirection(RRM, infront, n).y})
                         -- Set signal variable to successful ore move
                         break -- Goes out one for loop
                     end
@@ -55,7 +59,7 @@ function processRRMs()
 end
 
 
-function setRange(name) -- Done AFAIK
+function machine.setRange(name) -- Done AFAIK
     if name == "rrm-range10-building" then
         return 10
     elseif name == "rrm-range20-building" then
@@ -66,3 +70,5 @@ function setRange(name) -- Done AFAIK
         return "Wat!?"
     end
 end
+
+return machine

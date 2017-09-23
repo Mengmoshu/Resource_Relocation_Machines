@@ -1,5 +1,5 @@
--- Pulled from Item Collectors
--- Reinitialize ticker when game loads (Does this also run on a fresh game?)
+-- local helper  = require "scripts.helper"
+local machine = require "scripts.machine"
 
 myDebug = false
 
@@ -15,7 +15,7 @@ function ticker()
   if global.RRMs ~= nil then
     if global.ticks == 0 or global.ticks == nil then
       global.ticks = 29 -- Created here
-      processRRMs()
+      machine.processRRMs()
     else
       global.ticks = global.ticks - 1
     end
