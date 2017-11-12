@@ -2,6 +2,13 @@
 -- Reinitialize ticker when game loads (Does this also run on a fresh game?)
 
 myDebug = false
+MAX_RRMS_PER_TICK = 20
+MAX_IDLE_PER_TICK = 10
+TICKS_PER_RRM = 30
+TICKS_PER_IDLE = 600
+allowed_rrms = 0
+allowed_idle = 0
+index = 0
 
 script.on_load(function() -- Done AFAIK
     if global.RRMs ~= nil then -- Guard against empty/missing table
@@ -12,16 +19,27 @@ end)
 -- Pulled from Item Collectors
 -- Count down a delay for processing RRMs
 function ticker() -- Done AFAIK
-  if global.RRMs ~= nil then
-    if global.ticks == 0 or global.ticks == nil then
-      global.ticks = 29 -- Created here
-      processRRMs()
-    else
-      global.ticks = global.ticks - 1
+    local active = false
+    if global.RRMidle ~= nil then
+       active = true
+       allowed_idle = allowed_idle + #global.RRMidle / TICKS_PER_IDLE + 1
+        if allowed_idle > MAX_IDLE_PER_TICK then
+	    allowed_idle = MAX_IDLE_PER_TICK
+	end
+	processIdle()
     end
-  else
-    script.on_event(defines.events.on_tick, nil) -- Completely stop ticker when there are no buildings to process
-  end
+    if global.RRMs ~= nil then
+        active = true
+        allowed_rrms = allowed_rrms + #global.RRMs / TICKS_PER_RRM + 1
+        if allowed_rrms > MAX_RRMS_PER_TICK then
+	    allowed_rrms = MAX_RRMS_PER_TICK
+	end
+	processRRMs()
+    end
+    if not active then
+        -- Completely stop ticker when there are no buildings to process
+        script.on_event(defines.events.on_tick, nil)
+    end
 end
 
 -- Do "sensible things" about newly placed RRMs
@@ -47,30 +65,6 @@ script.on_event(defines.events.on_built_entity, builtEntity)
 script.on_event(defines.events.on_robot_built_entity, builtEntity)
 
 
-function print_resource(RRM, x)
-   RRM.surface.print("resource(" .. x.name .. ", " .. x.type .. ")")
-   control = RRM.get_control_behavior()
-   if control ~= nil then
-      parameters = control.parameters
-      if parameters ~= nil then
-	 parameters = parameters.parameters
-	 input = parameters[1]
-	 output = parameters[2]
-	 in_count = input.count
-	 in_name = input.signal.name
-	 if in_name == nil then
-	    in_name = "<NIL>"
-	 end
-	 out_count = output.count
-	 out_name = output.signal.name
-	 if out_name == nil then
-	    out_name = "<NIL>"
-	 end
-	 RRM.surface.print("  " .. in_name .. ":" .. in_count .. " -> " .. out_name .. ":" .. out_count)
-      end
-   end
-end
-
 function RRMOptions(RRM)
     -- set maximum range according to name
     local range = 1
@@ -89,10 +83,12 @@ function RRMOptions(RRM)
     local output = parameters[2]
     local in_range = input.count
     local in_name = input.signal.name
+    local inverted = false
     if in_name == nil then
        in_range = range
+       out_name = in_name
     elseif in_range < 0 then
-    -- negative in_range filters for infinite ores
+        -- negative in_range filters for infinite ores
         in_name = "infinite-" .. in_name
         in_range = -in_range
     end
@@ -104,25 +100,30 @@ function RRMOptions(RRM)
     if out_name == nil then
         out_range = range
     elseif out_range < 0 then
-    -- negative out_range filters for infinite ores
-        out_name = "infinite-" .. in_name
+        -- negative out_range means filter is inverted
+        inverted = true
         out_range = -out_range
     end
     if out_range > range then
         out_range = range
     end
-    return in_name, in_range, out_name, out_range
+    return in_name, in_range, out_name, out_range, inverted
 end
 
 function processRRMs()
-    for k, RRM in pairs(global.RRMs) do
-
+    while allowed_rrms > 0 do
+        allowed_rrms = allowed_rrms - 1
+        index = index + 1
+	if index > #global.RRMs then
+	    index = 1
+	end
+	RRM = global.RRMs[index]
         if RRM.valid then -- Check to see if the RRM is there
 	    local in_name = nil
 	    local in_range = 0
 	    local out_name = nil
 	    local out_range = 1
-	    in_name, in_range, out_name, out_range = RRMOptions(RRM)
+	    in_name, in_range, out_name, out_range, inverted = RRMOptions(RRM)
             local infront = RRM.direction
             local behind = (RRM.direction + 4) % 8
             local signal = nil
@@ -137,14 +138,21 @@ function processRRMs()
                 test = RRM.surface.find_entities_filtered({area = {searchArea(RRM, behind, k)}, type = "resource"}) -- Tile for ore
                 if test ~= nil then -- If the list is not empty something was found, time to work
                     for k, xx in pairs(test) do -- Iterate over the (Hopefully small) list of found resources
-		        if in_name == nil and out_name == nil then
+		        if in_name == nil then
 			    if xx.name ~= "crude-oil" then -- We don't relocate oil patches
 			        signal = xx
 			        break
 			    end
-			elseif in_name == xx.name or out_name == xx.name then
-			    signal = xx
-			    break
+			elseif inverted then
+			    if in_name ~= xx.name and out_name ~= xx.name then
+			        signal = xx
+			        break
+			    end
+			else
+			    if in_name == xx.name or out_name == xx.name then
+			        signal = xx
+			        break
+			    end
 			end
                     end
                 end
@@ -154,6 +162,7 @@ function processRRMs()
             end
             
             -- Only do this if signal is found and/or there's an ore entity to work with
+	    local moved = false
             if signal ~= nil then
                 -- Find suitable destination
                 for n = 1, out_range do
@@ -161,17 +170,47 @@ function processRRMs()
                     if next(dest) == nil then
                         signal.teleport({searchDirection(RRM, infront, n).x, searchDirection(RRM, infront, n).y})
                         -- Set signal variable to successful ore move
+			moved = true
                         break -- Goes out one for loop
                     end
                 end
+	    end
+	    if not moved then
+	        -- nothing to teleport or not possible to teleport, move RRM to idle list
+	        table.remove(global.RRMs, index)
+	        if global.RRMidle == nil then
+		   global.RRMidle = {}
+		end
+	        table.insert(global.RRMidle, RRM)
+	        index = index - 1
             end
         else
-            table.remove(global.RRMs, k) -- Remove missing RRM
+            table.remove(global.RRMs, index) -- Remove missing RRM
             if #global.RRMs == 0 then
-                global.RRMs = nil -- Nil the table so ticker will stop
+	        global.RRMs = nil -- Nil the table so ticker will stop
+	        return
             end
         end
     
+    end
+end
+
+-- adds previously idle RRMs back to active status
+function processIdle()
+    if allowed_idle > #global.RRMidle then
+       allowed_idle = #global.RRMidle
+    end
+    while allowed_idle > 0 do
+       allowed_idle = allowed_idle - 1
+       rrm = global.RRMidle[1]
+       table.remove(global.RRMidle, 1)
+       if global.RRMs == nil then
+		   global.RRMs = {}
+       end
+       table.insert(global.RRMs, rrm)
+    end
+    if #global.RRMidle == 0 then
+       global.RRMidle = nil -- Nil the table so ticker will stop
     end
 end
 
