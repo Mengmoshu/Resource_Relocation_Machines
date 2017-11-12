@@ -63,8 +63,8 @@ function processRRMs()
                 RRM.surface.print(RRM.direction)
             end
             
-            -- Search behind RRM for ore
-            for k = 1, range + 1 do
+            -- Search under and behind RRM for ore
+            for k = 0, range + 1 do
                 test = RRM.surface.find_entities_filtered({area = {searchArea(RRM, behind, k)}, type = "resource"}) -- Tile for ore
                 if test ~= nil then -- If the list is not empty something was found, time to work
                     for k, xx in pairs(test) do -- Iterate over the (Hopefully small) list of found resources
