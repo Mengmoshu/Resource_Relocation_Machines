@@ -8,7 +8,7 @@ return
     name = "rrm-range" .. inputs.range .."-building",
     icon = "__Resource_Relocation_Machines__/graphics/Range" .. inputs.range .. "-Icon.png",
     flags = {"placeable-neutral", "player-creation"},
-    minable = {hardness = 0.2, mining_time = 0.5, result = "rrm-range10"},
+    minable = {hardness = 0.2, mining_time = 0.5, result = "rrm-range" .. inputs.range},
     max_health = 50,
     corpse = "small-remnants",
 
