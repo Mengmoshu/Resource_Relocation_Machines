@@ -47,13 +47,76 @@ script.on_event(defines.events.on_built_entity, builtEntity)
 script.on_event(defines.events.on_robot_built_entity, builtEntity)
 
 
+function print_resource(RRM, x)
+   RRM.surface.print("resource(" .. x.name .. ", " .. x.type .. ")")
+   control = RRM.get_control_behavior()
+   if control ~= nil then
+      parameters = control.parameters
+      if parameters ~= nil then
+	 parameters = parameters.parameters
+	 input = parameters[1]
+	 output = parameters[2]
+	 in_count = input.count
+	 in_name = input.signal.name
+	 if in_name == nil then
+	    in_name = "<NIL>"
+	 end
+	 out_count = output.count
+	 out_name = output.signal.name
+	 if out_name == nil then
+	    out_name = "<NIL>"
+	 end
+	 RRM.surface.print("  " .. in_name .. ":" .. in_count .. " -> " .. out_name .. ":" .. out_count)
+      end
+   end
+end
+
+function RRMOptions(RRM)
+    -- set maximum range according to name
+    local range = 1
+    if RRM.name == "rrm-range10-building" then
+        range = 10
+    elseif RRM.name == "rrm-range20-building" then
+        range = 20
+    elseif RRM.name == "rrm-range30-building" then
+        range = 30
+    end
+    -- check combinator settings
+    local control = RRM.get_control_behavior()
+    local parameters = control.parameters
+    parameters = parameters.parameters
+    local input = parameters[1]
+    local output = parameters[2]
+    local in_range = input.count
+    local in_name = input.signal.name
+    if in_name == nil then
+       in_range = range
+    elseif in_range < 0 then
+    -- negative in_range filters for infinite ores
+        in_name = "infinite-" .. in_name
+        in_range = -in_range
+    end
+    if in_range > range then
+        in_range = range
+    end
+    local out_range = output.count
+    local out_name = output.signal.name
+    if out_name == nil then
+        out_range = range
+    elseif out_range > range then
+        out_range = range
+    end
+    return in_name, in_range, out_range
+end
+
 function processRRMs()
-  local ores -- Probably removing
-    
     for k, RRM in pairs(global.RRMs) do
-    
+
         if RRM.valid then -- Check to see if the RRM is there
-            local range = setRange(RRM.name)
+	    local in_name = nil
+	    local in_range = 0
+	    local out_range = 1
+	    in_name, in_range, out_range = RRMOptions(RRM)
             local infront = RRM.direction
             local behind = (RRM.direction + 4) % 8
             local signal = nil
@@ -64,14 +127,19 @@ function processRRMs()
             end
             
             -- Search under and behind RRM for ore
-            for k = 0, range + 1 do
+            for k = 0, in_range - 1 do
                 test = RRM.surface.find_entities_filtered({area = {searchArea(RRM, behind, k)}, type = "resource"}) -- Tile for ore
                 if test ~= nil then -- If the list is not empty something was found, time to work
                     for k, xx in pairs(test) do -- Iterate over the (Hopefully small) list of found resources
-                        if xx.name ~= "crude-oil" then -- We don't relocate oil patches
-                            signal = xx
-                            break
-                        end
+		        if in_name == nil then
+			    if xx.name ~= "crude-oil" then -- We don't relocate oil patches
+			        signal = xx
+			        break
+			    end
+			elseif in_name == xx.name then
+			    signal = xx
+			    break
+			end
                     end
                 end
                 if signal ~= nil then
@@ -82,7 +150,7 @@ function processRRMs()
             -- Only do this if signal is found and/or there's an ore entity to work with
             if signal ~= nil then
                 -- Find suitable destination
-                for n = 1, range + 1 do
+                for n = 1, out_range do
                     dest = RRM.surface.find_entities_filtered({area = {searchArea(RRM, infront, n)}, type = "resource"}) -- We only need there to be no entities of type "resource"
                     if next(dest) == nil then
                         signal.teleport({searchDirection(RRM, infront, n).x, searchDirection(RRM, infront, n).y})
@@ -130,18 +198,6 @@ function searchDirection(RRM, direction, offset) -- Done AFAIK
     elseif direction == 6 then -- East  X+
         return {x = RRM.position.x + offset, y = RRM.position.y}
     else                       -- Broken!
-        return "Wat!?"
-    end
-end
-
-function setRange(name) -- Done AFAIK
-    if name == "rrm-range10-building" then
-        return 10
-    elseif name == "rrm-range20-building" then
-        return 20
-    elseif name == "rrm-range30-building" then
-        return 30
-    else
         return "Wat!?"
     end
 end

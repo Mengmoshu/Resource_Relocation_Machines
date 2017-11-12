@@ -15,7 +15,7 @@ return
     collision_box = {{-0.4, -0.4}, {0.4, 0.4}},
     selection_box = {{-0.5, -0.5}, {0.5, 0.5}},
 
-    item_slot_count = 1,
+    item_slot_count = 2,
 
     sprites =
     {   -- Note that this version inverts the directions.
