@@ -103,10 +103,15 @@ function RRMOptions(RRM)
     local out_name = output.signal.name
     if out_name == nil then
         out_range = range
-    elseif out_range > range then
+    elseif out_range < 0 then
+    -- negative out_range filters for infinite ores
+        out_name = "infinite-" .. in_name
+        out_range = -out_range
+    end
+    if out_range > range then
         out_range = range
     end
-    return in_name, in_range, out_range
+    return in_name, in_range, out_name, out_range
 end
 
 function processRRMs()
@@ -115,8 +120,9 @@ function processRRMs()
         if RRM.valid then -- Check to see if the RRM is there
 	    local in_name = nil
 	    local in_range = 0
+	    local out_name = nil
 	    local out_range = 1
-	    in_name, in_range, out_range = RRMOptions(RRM)
+	    in_name, in_range, out_name, out_range = RRMOptions(RRM)
             local infront = RRM.direction
             local behind = (RRM.direction + 4) % 8
             local signal = nil
@@ -131,12 +137,12 @@ function processRRMs()
                 test = RRM.surface.find_entities_filtered({area = {searchArea(RRM, behind, k)}, type = "resource"}) -- Tile for ore
                 if test ~= nil then -- If the list is not empty something was found, time to work
                     for k, xx in pairs(test) do -- Iterate over the (Hopefully small) list of found resources
-		        if in_name == nil then
+		        if in_name == nil and out_name == nil then
 			    if xx.name ~= "crude-oil" then -- We don't relocate oil patches
 			        signal = xx
 			        break
 			    end
-			elseif in_name == xx.name then
+			elseif in_name == xx.name or out_name == xx.name then
 			    signal = xx
 			    break
 			end
