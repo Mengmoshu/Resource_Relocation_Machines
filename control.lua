@@ -2,68 +2,84 @@
 -- Reinitialize ticker when game loads (Does this also run on a fresh game?)
 
 myDebug = false
-MAX_RRMS_PER_TICK = 20
-MAX_IDLE_PER_TICK = 10
+MAX_PER_TICK = 10
+LEVELS = 8
 TICKS_PER_RRM = 30
-TICKS_PER_IDLE = 600
 allowed_rrms = 0
-allowed_idle = 0
-index = 0
 
-script.on_load(function() -- Done AFAIK
-    if global.RRMs ~= nil then -- Guard against empty/missing table
-        script.on_event(defines.events.on_tick, ticker)
-    end
-end)
+function debug(text)
+   if myDebug then
+      log(text)
+   end
+end
+
+function init()
+   local rrms = global.rrms
+   if rrms == nil then
+      rrms = {}
+      global.rrms = rrms
+      global.num_rrms = 0
+      global.current_loop = 1
+      global.current_level = 0
+      global.current_rrms = {}
+      global.block_loop = true
+      global.ticks = TICKS_PER_RRM
+   end
+   for i = 1, LEVELS do
+      if rrms[i] == nil then
+	 rrms[i] = {}
+      end
+   end
+   if global.num_rrms > 0 then
+      script.on_event(defines.events.on_tick, ticker)
+   end
+   debug("global data = " .. serpent.block(global))
+end
+
+script.on_init(init)
+script.on_load(init)
 
 -- Pulled from Item Collectors
 -- Count down a delay for processing RRMs
-function ticker() -- Done AFAIK
-    local active = false
-    if global.RRMidle ~= nil then
-       active = true
-       allowed_idle = allowed_idle + #global.RRMidle / TICKS_PER_IDLE + 1
-        if allowed_idle > MAX_IDLE_PER_TICK then
-	    allowed_idle = MAX_IDLE_PER_TICK
-	end
-	processIdle()
-    end
-    if global.RRMs ~= nil then
-        active = true
-        allowed_rrms = allowed_rrms + #global.RRMs / TICKS_PER_RRM + 1
-        if allowed_rrms > MAX_RRMS_PER_TICK then
-	    allowed_rrms = MAX_RRMS_PER_TICK
-	end
-	processRRMs()
-    end
-    if not active then
-        -- Completely stop ticker when there are no buildings to process
-        script.on_event(defines.events.on_tick, nil)
-    end
+function ticker()
+   if global.block_loop then
+      if global.ticks <= 0 then
+	 global.ticks = TICKS_PER_RRM
+	 global.block_loop = false
+      else
+	 global.ticks = global.ticks - 1
+      end
+   end
+   if global.num_rrms == 0 then
+      script.on_event(defines.events.on_tick, nil)
+   else
+      allowed_rrms = math.min(allowed_rrms + global.num_rrms / TICKS_PER_RRM,
+			      MAX_PER_TICK,
+			      global.num_rrms)
+      processRRMs()
+   end
 end
 
 -- Do "sensible things" about newly placed RRMs
 function builtEntity(event) -- Done AFAIK
-    if event.created_entity.name == "rrm-range10-building" or event.created_entity.name == "rrm-range20-building" or event.created_entity.name == "rrm-range30-building" then
-        if myDebug == true then event.created_entity.surface.print("builtEntity fired") end
-        if global.RRMs == nil then -- Guard against empty/missing table
-          global.RRMs = {} -- Create the table (Only place this happens)
-          script.on_event(defines.events.on_tick, ticker)
-          if myDebug == true then
-            event.created_entity.surface.print("global.RRMs created and ticker registered")
-          end
-        end
-        
-        table.insert(global.RRMs, event.created_entity)
-        if myDebug == true then
-            event.created_entity.surface.print("new RRM inserted to global.RRMs")
-        end
-    end
+   if event.created_entity.name == "rrm-range10-building" or event.created_entity.name == "rrm-range20-building" or event.created_entity.name == "rrm-range30-building" then
+      if myDebug == true then event.created_entity.surface.print("builtEntity fired") end
+      if global.num_rrms then
+	 script.on_event(defines.events.on_tick, ticker)
+	 if myDebug == true then
+            event.created_entity.surface.print("ticker registered")
+	 end
+      end
+      global.num_rrms = global.num_rrms + 1
+      table.insert(global.rrms[1], event.created_entity)
+      if myDebug == true then
+	 event.created_entity.surface.print("new RRM inserted")
+      end
+   end
 end
 
 script.on_event(defines.events.on_built_entity, builtEntity)
 script.on_event(defines.events.on_robot_built_entity, builtEntity)
-
 
 function RRMOptions(RRM)
     -- set maximum range according to name
@@ -111,31 +127,59 @@ function RRMOptions(RRM)
 end
 
 function processRRMs()
-    while allowed_rrms > 0 do
-        allowed_rrms = allowed_rrms - 1
-        index = index + 1
-	if index > #global.RRMs then
-	    index = 1
-	end
-	RRM = global.RRMs[index]
-        if RRM.valid then -- Check to see if the RRM is there
+   log("processing " .. allowed_rrms)
+   while allowed_rrms >= 1 do
+      -- grab next slize to work on
+      while #global.current_rrms == 0 do
+	 global.current_level = global.current_level + 1
+	 if global.current_level > LEVELS then
+	    global.current_level = 1
+	    global.current_loop = global.current_loop + 2
+	    if global.block_loop then
+	       return
+	    else
+	       global.block_loop = true
+	    end
+	 end
+	 if bit32.extract(global.current_loop, (global.current_level - 1)) ~= 0 then
+	    global.current_rrms = global.rrms[global.current_level]
+	    global.rrms[global.current_level] = {}
+	 end
+      end
+
+      debug("current_loop = " .. global.current_loop .. ", current_level = " .. global.current_level)
+      debug("current_rrms = " .. serpent.block(global.current_rrms))
+      if allowed_rrms >= #global.current_rrms then
+	 debug("  taking")
+	 rrms = global.current_rrms
+	 global.current_rrms = {}
+      else
+	 debug("  splitting at " .. allowed_rrms)
+	 rrms = table.pack(table.unpack(global.current_rrms, 1, allowed_rrms))
+	 global.current_rrms = table.pack(table.unpack(global.current_rrms, allowed_rrms + 1))
+      end
+
+      debug("rrms = " .. serpent.block(rrms) .. ", current_rrms = " .. serpent.block(global.current_rrms))
+      allowed_rrms = allowed_rrms - #rrms
+      for i, rrm in ipairs(rrms) do
+	 if rrm.valid then -- Check to see if the RRM is there
 	    local in_name = nil
 	    local in_range = 0
 	    local out_name = nil
 	    local out_range = 1
-	    in_name, in_range, out_name, out_range, inverted = RRMOptions(RRM)
-            local infront = RRM.direction
-            local behind = (RRM.direction + 4) % 8
+	    in_name, in_range, out_name, out_range, inverted = RRMOptions(rrm)
+            local infront = rrm.direction
+            local behind = (rrm.direction + 4) % 8
             local signal = nil
             
-            if myDebug == true then
-                RRM.surface.print("processRRMs fired, RRM.valid true")
-                RRM.surface.print(RRM.direction)
-            end
+            --if myDebug == true then
+	    --   rrm.surface.print("processRRMs fired, RRM.valid true")
+	    --   rrm.surface.print(rrm.direction)
+            --end
             
             -- Search under and behind RRM for ore
             for k = 0, in_range - 1 do
-                test = RRM.surface.find_entities_filtered({area = {searchArea(RRM, behind, k)}, type = "resource"}) -- Tile for ore
+                test = rrm.surface.find_entities_filtered({area = {searchArea(rrm, behind, k)}, type = "resource"}) -- Tile for ore
                 if test ~= nil then -- If the list is not empty something was found, time to work
                     for k, xx in pairs(test) do -- Iterate over the (Hopefully small) list of found resources
 		        if in_name == nil then
@@ -166,52 +210,29 @@ function processRRMs()
             if signal ~= nil then
                 -- Find suitable destination
                 for n = 1, out_range do
-                    dest = RRM.surface.find_entities_filtered({area = {searchArea(RRM, infront, n)}, type = "resource"}) -- We only need there to be no entities of type "resource"
+                    dest = rrm.surface.find_entities_filtered({area = {searchArea(rrm, infront, n)}, type = "resource"}) -- We only need there to be no entities of type "resource"
                     if next(dest) == nil then
-                        signal.teleport({searchDirection(RRM, infront, n).x, searchDirection(RRM, infront, n).y})
+                        signal.teleport({searchDirection(rrm, infront, n).x, searchDirection(rrm, infront, n).y})
                         -- Set signal variable to successful ore move
 			moved = true
                         break -- Goes out one for loop
                     end
                 end
 	    end
-	    if not moved then
-	        -- nothing to teleport or not possible to teleport, move RRM to idle list
-	        table.remove(global.RRMs, index)
-	        if global.RRMidle == nil then
-		   global.RRMidle = {}
-		end
-	        table.insert(global.RRMidle, RRM)
-	        index = index - 1
-            end
-        else
-            table.remove(global.RRMs, index) -- Remove missing RRM
-            if #global.RRMs == 0 then
-	        global.RRMs = nil -- Nil the table so ticker will stop
-	        return
-            end
-        end
-    
-    end
-end
-
--- adds previously idle RRMs back to active status
-function processIdle()
-    if allowed_idle > #global.RRMidle then
-       allowed_idle = #global.RRMidle
-    end
-    while allowed_idle > 0 do
-       allowed_idle = allowed_idle - 1
-       rrm = global.RRMidle[1]
-       table.remove(global.RRMidle, 1)
-       if global.RRMs == nil then
-		   global.RRMs = {}
-       end
-       table.insert(global.RRMs, rrm)
-    end
-    if #global.RRMidle == 0 then
-       global.RRMidle = nil -- Nil the table so ticker will stop
-    end
+	    if moved then
+	       table.insert(global.rrms[1], rrm)
+	       debug("  moving to 1")
+	    else
+	       local next_level = math.min(global.current_level + 1, LEVELS)
+	       table.insert(global.rrms[next_level], rrm)
+	       debug("  moving to " .. next_level)
+	    end
+	 else
+	    -- rrm not valid, remove it
+	    global.num_rrms = global.num_rrms - 1
+	 end
+      end
+   end
 end
 
 -- Returns 2 position tables
