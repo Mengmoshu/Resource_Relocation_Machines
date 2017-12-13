@@ -9,6 +9,17 @@ script.on_load(function() -- Done AFAIK
     end
 end)
 
+function tickerNew(event)
+    local tick = event.tick
+    local buckets = global.Buckets
+
+    for k, v in pairs(buckets) do
+        local modulus = (tick % #k) + 1
+        -- invoke k[modulus]
+        machine.tick(k[modulus])
+    end
+end
+
 -- Pulled from Item Collectors
 -- Count down a delay for processing RRMs
 function ticker()

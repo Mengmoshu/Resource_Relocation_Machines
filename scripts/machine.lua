@@ -1,14 +1,30 @@
 local helper = require "helper"
 
-local machine = {}
+local m = {}
+local typeJump = {
+    -- key = entity.name, value = function
+    "rrm-range10-building" = ResourceRelocationMachine,
+    "rrm-range20-building" = ResourceRelocationMachine,
+    "rrm-range30-building" = ResourceRelocationMachine
+}
 
--- Todo: Make functions local
+function ResourceRelocationMachine(entity) -- RRM specific ticking
+
+end
+
+function m.tick(bucket)
+    for k, v in pairs(bucket) do
+        local name = v.name
+        -- Function table magic?
+        typeJump.[name](v)
+    end
+end
 
 -- Performance Queue Notes:
--- Rework this function to take a Bucket table
+-- Write new version of this function to take a Bucket table, named m.tick()
 -- Refactor machine class specific stuff into seperate function
 -- Rename this function to processMachines(bucket)
-function machine.processRRMs()
+function m.processRRMs()
     for k, RRM in pairs(global.RRMs) do
     
         if RRM.valid then -- Check to see if the RRM is there
@@ -61,7 +77,7 @@ function machine.processRRMs()
 end
 
 
-function machine.setRange(name) -- Done AFAIK
+function m.setRange(name) -- Done AFAIK
     if name == "rrm-range10-building" then
         return 10
     elseif name == "rrm-range20-building" then
@@ -73,4 +89,4 @@ function machine.setRange(name) -- Done AFAIK
     end
 end
 
-return machine
+return m

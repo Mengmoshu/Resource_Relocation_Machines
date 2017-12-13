@@ -10,4 +10,16 @@ local function b.initSet(name, interval)
     end
 end
 
+local function b.configure(intervalList,) --?
+
+end
+
 return b
+
+global = {
+    Buckets = {
+        interval1 = {}
+        interval2 = {}
+
+    }
+}
