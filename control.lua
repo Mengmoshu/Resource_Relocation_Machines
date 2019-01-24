@@ -57,6 +57,7 @@ function processRRMs()
             local infront = RRM.direction
             local behind = (RRM.direction + 4) % 8
             local signal = nil
+			local l = 0
             
             if myDebug == true then
                 RRM.surface.print("processRRMs fired, RRM.valid true")
@@ -65,6 +66,7 @@ function processRRMs()
             
             -- Search behind RRM for ore
             for k = 1, range + 1 do
+				l = l+1
                 test = RRM.surface.find_entities_filtered({area = {searchArea(RRM, behind, k)}, type = "resource"}) -- Tile for ore
                 if test ~= nil then -- If the list is not empty something was found, time to work
                     for k, xx in pairs(test) do -- Iterate over the (Hopefully small) list of found resources
@@ -81,15 +83,23 @@ function processRRMs()
             
             -- Only do this if signal is found and/or there's an ore entity to work with
             if signal ~= nil then
-                -- Find suitable destination
-                for n = 1, range + 1 do
-                    dest = RRM.surface.find_entities_filtered({area = {searchArea(RRM, infront, n)}, type = "resource"}) -- We only need there to be no entities of type "resource"
-                    if next(dest) == nil then
-                        signal.teleport({searchDirection(RRM, infront, n).x, searchDirection(RRM, infront, n).y})
-                        -- Set signal variable to successful ore move
-                        break -- Goes out one for loop
-                    end
-                end
+                -- Find suitable destination: Try to shift original spots equivalently
+				dest = RRM.surface.find_entities_filtered({area = {searchArea(RRM, infront, range + 2 - l)}, type = "resource"}) -- We only need there to be no entities of type "resource"
+				if next(dest) == nil then
+					signal.teleport({searchDirection(RRM, infront, range + 2 - l).x, searchDirection(RRM, infront, range + 2 - l).y})
+					-- Set signal variable to successful ore move
+				-- Find any other suitable destination	
+				else				
+					for n = 1, range + 1 do
+						dest = RRM.surface.find_entities_filtered({area = {searchArea(RRM, infront, range + 2 - n)}, type = "resource"}) -- We only need there to be no entities of type "resource"
+						if next(dest) == nil then
+							signal.teleport({searchDirection(RRM, infront, range + 2 - n).x, searchDirection(RRM, infront, range + 2 - n).y})
+							-- Set signal variable to successful ore move
+							break -- Goes out one for loop
+						end
+					end
+				end
+				
             end
         else
             table.remove(global.RRMs, k) -- Remove missing RRM
