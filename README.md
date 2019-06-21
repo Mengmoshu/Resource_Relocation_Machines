@@ -14,6 +14,9 @@ I haven't refined this mod at all really, so be warned that the art is ugly, and
     
 # Changelog:
 * 0.0.8 -
+** Updated for 0.17.x
+** Fixed Flags not found when lauching with v 0.17.x (Removed Flag line entirely as game no longer uses it)
+* 0.0.8 -
 ** Updated for 0.16.x
 * 0.0.7 -
 ** Updated for 0.15.x
