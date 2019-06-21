@@ -24,3 +24,8 @@ I haven't refined this mod at all really, so be warned that the art is ugly, and
 ** Fixed name mismatch caused by missed adjustments after pluralizing the mod's name.
 * 0.0.5 -
 ** Initial public release.
+
+
+#Credits:
+* Mengmoshu - Original idea and implementation.
+* Vampiredmage - 0.17 update.
