@@ -26,6 +26,6 @@ I haven't refined this mod at all really, so be warned that the art is ugly, and
 ** Initial public release.
 
 
-#Credits:
+# Credits:
 * Mengmoshu - Original idea and implementation.
 * Vampiredmage - 0.17 update.
