@@ -4,7 +4,7 @@ data:extend({
 	{
     type = "recipe",
     name = "rrm-range10",
-    enabled = "true",
+    enabled = true,
     ingredients = 
     {
       {"iron-gear-wheel", 5},
@@ -18,7 +18,7 @@ data:extend({
     {
     type = "recipe",
     name = "rrm-range20",
-    enabled = "true",
+    enabled = true,
     ingredients = 
     {
       {"rrm-range10",1},
@@ -30,7 +30,7 @@ data:extend({
     {
     type = "recipe",
     name = "rrm-range30",
-    enabled = "true",
+    enabled = true,
     ingredients = 
     {
       {"rrm-range20",1},
