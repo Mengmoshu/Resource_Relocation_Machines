@@ -19,7 +19,7 @@ data:extend({
     place_result = "rrm-range20-building",
     stack_size= 50,
   },
-  
+
   -- Range 30
  {
     type = "item",
@@ -29,5 +29,5 @@ data:extend({
     place_result = "rrm-range30-building",
     stack_size= 50,
   },
-  
+
 })

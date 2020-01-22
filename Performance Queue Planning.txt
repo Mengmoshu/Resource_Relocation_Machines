@@ -1,0 +1,30 @@
+Player places RRM
+RRM is added to lowest numbered least full bucket
+    Where are the buckets?
+        One per device rate? Or is there a more elegant way?
+
+All RRMs in a single bucket get run on that bucket's tick
+If a bucket is empty on its tick then no RRMs run that tick
+
+
+RRM.Buckets = {30 x {}}
+
+processRRMS(global.Buckets.RRM[(tick % 30) + 1])
+
+
+
+\scripts\bucket.lua
+bucket.initSet(name, interval) -- Creates global.Buckets.name[] with interval empty tables
+bucket.add(entity) -- This function will choose buckets based on machine class
+bucket.remove(bucketSetEntry)
+
+\scripts\machine.lua
+machine.tick(entity) -- If entity is gone will bucket.remove(entity), bucket aware.
+machine.range(entity) -- Support function for some machines (like RRMs)
+
+\scripts\helper.lua
+helper.offsetDirection(location, direction, offset)
+helper.offsetArea(location, direction, offset, radius)
+
+Track emptiest bucket per interval? Or determine emptiest bucket during add?
+    Search on the fly to begin with.
