@@ -7,6 +7,8 @@ return
     type = "constant-combinator",
     name = "rrm-range" .. inputs.range .."-building",
     icon = "__Resource_Relocation_Machines__/graphics/Range" .. inputs.range .. "-Icon.png",
+    icon_size = 32,
+
     flags = {"placeable-neutral", "player-creation"},
     minable = {hardness = 0.2, mining_time = 0.5, result = "rrm-range10"},
     max_health = 50,
@@ -57,7 +59,7 @@ return
     {
       north =
       {
-        filename = "__base__/graphics/entity/combinator/activity-leds/combinator-led-constant-north.png",
+        filename = "__base__/graphics/entity/combinator/activity-leds/hr-constant-combinator-LED-N.png",
         width = 11,
         height = 10,
         frame_count = 1,
@@ -65,7 +67,7 @@ return
       },
       east =
       {
-        filename = "__base__/graphics/entity/combinator/activity-leds/combinator-led-constant-east.png",
+        filename = "__base__/graphics/entity/combinator/activity-leds/hr-constant-combinator-LED-E.png",
         width = 14,
         height = 12,
         frame_count = 1,
@@ -73,7 +75,7 @@ return
       },
       south =
       {
-        filename = "__base__/graphics/entity/combinator/activity-leds/combinator-led-constant-south.png",
+        filename = "__base__/graphics/entity/combinator/activity-leds/hr-constant-combinator-LED-S.png",
         width = 11,
         height = 11,
         frame_count = 1,
@@ -81,7 +83,7 @@ return
       },
       west =
       {
-        filename = "__base__/graphics/entity/combinator/activity-leds/combinator-led-constant-west.png",
+        filename = "__base__/graphics/entity/combinator/activity-leds/hr-constant-combinator-LED-W.png",
         width = 12,
         height = 12,
         frame_count = 1,
