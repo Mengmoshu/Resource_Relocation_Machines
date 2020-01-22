@@ -25,19 +25,24 @@ If there isn't an issue that I have participated in that shows the behavior is u
 This may happen because of your editor, or because the existing formatting is inconsistent, or you might dislike the existing formatting. However, this causes PRs to be slightly more difficult to review, and significantly harder to merge into unrelated branches. That second is really only a problem for me because I don't get around to working on this mod frequently any more.
     
 # Changelog:
-* 0.0.10 -
- * Merged in The Staplergun's queueing and performance improvements
-* 0.0.9 -
- * Updated for 0.17.x
- * Fixed Flags not found when lauching with v 0.17.x (Removed Flag line entirely as game no longer uses it)
-* 0.0.8 -
- * Updated for 0.16.x
-* 0.0.7 -
- * Updated for 0.15.x
-* 0.0.6 -
- * Fixed name mismatch caused by missed adjustments after pluralizing the mod's name.
-* 0.0.5 -
- * Initial public release.
+#### 0.0.10 -
+* Merged in The Staplergun's queueing and performance improvements
+
+#### 0.0.9 -
+* Updated for 0.17.x
+* Fixed Flags not found when lauching with v 0.17.x (Removed Flag line entirely as game no longer uses it)
+
+#### 0.0.8 -
+* Updated for 0.16.x
+
+#### 0.0.7 -
+* Updated for 0.15.x
+
+#### 0.0.6 -
+* Fixed name mismatch caused by missed adjustments after pluralizing the mod's name.
+
+#### 0.0.5 -
+* Initial public release.
 
 
 # Credits:
