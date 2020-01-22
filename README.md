@@ -25,6 +25,9 @@ If there isn't an issue that I have participated in that shows the behavior is u
 This may happen because of your editor, or because the existing formatting is inconsistent, or you might dislike the existing formatting. However, this causes PRs to be slightly more difficult to review, and significantly harder to merge into unrelated branches. That second is really only a problem for me because I don't get around to working on this mod frequently any more.
     
 # Changelog:
+#### 0.0.11 -
+* Updated for 0.18.x
+
 #### 0.0.10 -
 * Merged in The Staplergun's queueing and performance improvements
 
