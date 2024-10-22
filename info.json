@@ -1,11 +1,14 @@
 {
-  "name": "Resource_Relocation_Machines",
-  "version": "0.0.12",
-  "title": "Resource Relocation Machines",
-  "author": "Mengmoshu, Vampiredmage, The Staplergun",
-  "contact": "www.factorioforums.com",
-  "description": "Moves pesky tiles of resources out of the way.",
-  "dependencies": ["base"],
-  "license": "MIT",
-  "factorio_version": "1.1"
+    "name": "Resource_Relocation_Machines",
+    "version": "0.0.13",
+    "title": "Resource Relocation Machines",
+    "author": "Mengmoshu, Vampiredmage, The Staplergun",
+    "contact": "www.factorioforums.com",
+    "description": "Moves pesky tiles of resources out of the way.",
+    "dependencies":
+    [
+        "base"
+    ],
+    "license": "MIT",
+    "factorio_version": "2.0"
 }

@@ -4,38 +4,45 @@ data:extend({
 	{
     type = "recipe",
     name = "rrm-range10",
-    enabled = "true",
+    enabled = true,
+    allow_quality = false,
     ingredients =
     {
-      {"iron-gear-wheel", 5},
-      {"copper-cable", 2},
-      {"iron-plate", 4}
+      {type = "item", name = "iron-gear-wheel", amount = 5},
+      {type = "item", name = "copper-cable", amount = 2},
+      {type = "item", name =  "iron-plate", amount = 4}
     },
-    result = "rrm-range10"
+    results = {{type = "item", name = "rrm-range10", amount = 1}}
 	},
 
     -- RRM Range 20
     {
     type = "recipe",
     name = "rrm-range20",
-    enabled = "true",
+    enabled = true,
+    allow_quality = false,
     ingredients =
     {
-      {"rrm-range10",1},
+      {type = "item", name = "iron-gear-wheel", amount = 5},
+      {type = "item", name = "copper-cable", amount = 2},
+      {type = "item", name =  "iron-plate", amount = 4}
     },
-    result = "rrm-range20"
+    results = {{type = "item", name = "rrm-range20", amount = 1}}
 	},
 
     -- RRM Range 30
     {
     type = "recipe",
     name = "rrm-range30",
-    enabled = "true",
+    enabled = true,
+    allow_quality = false,
     ingredients =
     {
-      {"rrm-range20",1},
+      {type = "item", name = "iron-gear-wheel", amount = 5},
+      {type = "item", name = "copper-cable", amount = 2},
+      {type = "item", name =  "iron-plate", amount = 4}
     },
-    result = "rrm-range30"
+    results = {{type = "item", name = "rrm-range30", amount = 1}}
 	},
 
 })

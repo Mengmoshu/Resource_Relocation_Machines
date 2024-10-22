@@ -7,7 +7,7 @@ function make_rrm(inputs)
     temp.name = "rrm-range" .. inputs.range .. "-building"
     temp.icon = "__Resource_Relocation_Machines__/graphics/Range" .. inputs.range .. "-Icon.png"
     temp.icon_size = 32
-    temp.minable = {hardness = 0.1, mining_time = 0.1, result = "rrm-range10"}
+    temp.minable = {hardness = 0.1, mining_time = 0.1, result = "rrm-range" .. inputs.range}
     temp.max_health = 50
     temp.item_slot_count = 1
     temp.sprites =
