@@ -63,14 +63,14 @@ local function process_queue(q_index, q_bin)
                 q_index = q_index,
                 q_bin_slot = i
             }
-            global.machines[bin_slot.unit_number] = nil
+            storage.machines[bin_slot.unit_number] = nil
             Q.r(data)
         end
     end
 end
 
 local function on_tick()
-    local q = global.queue
+    local q = storage.queue
     local q_index = (game.tick % 60) + 1
     local q_bin = q[q_index]
     if q_bin and next(q_bin) then --Ensures that the current bin exists and is not empty
@@ -82,21 +82,21 @@ local function initialize_rmm_machine(event)
     local entity = event.created_entity or event.entity
     local entity_name = entity.name
     if range_table[entity_name] then --Check if valid entity to work with
-        if not global.running then --Initialize the queue if it's not running already.
-            global.queue = {}
-            global.running = true
+        if not storage.running then --Initialize the queue if it's not running already.
+            storage.queue = {}
+            storage.running = true
             script.on_event(defines.events.on_tick, on_tick)
         end
         local data = Q.a(entity) --Store the entity in the queue
-        global.machines = global.machines or {}
-        global.machines[entity.unit_number] = data --Table returned from Q.a stores bin/bin_slot under the entities unit number. This allows you to remove it in the event it's invalid later in the script
+        storage.machines = storage.machines or {}
+        storage.machines[entity.unit_number] = data --Table returned from Q.a stores bin/bin_slot under the entities unit number. This allows you to remove it in the event it's invalid later in the script
     end
 end
 script.on_event(defines.events.on_built_entity, initialize_rmm_machine)
 script.on_event(defines.events.on_robot_built_entity, initialize_rmm_machine)
 
 local function on_load()
-    if global.running then
+    if storage.running then
         script.on_event(defines.events.on_tick, on_tick)
     end
 end

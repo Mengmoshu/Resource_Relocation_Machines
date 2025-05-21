@@ -6,7 +6,7 @@ local function b.initSet(name, interval)
         table.insert( temp, {} )
     end
     if #temp == interval then
-        global.Buckets[name] = temp -- Be aware this may not do the right thing.
+        storage.Buckets[name] = temp -- Be aware this may not do the right thing.
     end
 end
 
@@ -16,7 +16,7 @@ end
 
 return b
 
-global = {
+storage = {
     Buckets = {
         interval1 = {}
         interval2 = {}

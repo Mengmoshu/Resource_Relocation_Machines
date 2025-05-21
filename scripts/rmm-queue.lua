@@ -1,7 +1,7 @@
 local queue = {}
 
 function queue.a(entity)
-    local q = global.queue
+    local q = storage.queue
     local q_index = (game.tick % 60) + 1    --Grab the index from 1-60 based on game tick
     local q_data = {                        --Build the queue entry
         entity = entity,
@@ -15,13 +15,13 @@ function queue.a(entity)
 end
 
 function queue.r(data)
-    local q = global.queue
+    local q = storage.queue
     q[data.q_index][data.q_bin_slot] = nil              --data -> {q_index, q_bin_slot} gained from earlier
     if not next(q[data.q_index]) then                   --Check if the current "bin" is empty
         q[data.q_index] = nil                           --Nil the bin entry so it doesn't get iterated with pairs()
     end
-    if not next(q) then                                 --Check if global.queue is empty
-        global.running = false                          --Set running to false. Running is for on_load conditional registry
+    if not next(q) then                                 --Check if storage.queue is empty
+        storage.running = false                          --Set running to false. Running is for on_load conditional registry
         script.on_event(defines.events.on_tick, nil)
     end
 end
