@@ -6,7 +6,7 @@ A Factorio mod themed around moving pesky ore patches to less pesky places.
 ## Resource Relocation Machine:
 A 1x1 building that moves ores from behind it to in front of it, one at a time. Directional machine that moves resource entities to it's far side. Excludes oil patches,
 
-Place one of the machines and shortly it will begin moving ore from behind the machine to in front of it. It doesn't require power or fuel, and it doesn't produce pollution. They come in 10, 20, and 30 tile ranges, if you make the longer ranged ones they turn back into the basic one when you mine them. Don't worry, it doesn't cost any resources to upgrade them again.
+Place one of the machines and shortly it will begin moving ore from behind the machine to in front of it. It doesn't require power or fuel, and it doesn't produce pollution. They come in 10, 20, and 30 tile ranges.
 
 
 # A Note
@@ -25,6 +25,10 @@ If there isn't an issue that I have participated in that shows the behavior is u
 This may happen because of your editor, or because the existing formatting is inconsistent, or you might dislike the existing formatting. However, this causes PRs to be slightly more difficult to review, and significantly harder to merge into unrelated branches. That second is really only a problem for me because I don't get around to working on this mod frequently any more.
     
 # Changelog:
+#### 0.0.13 -
+* Updated for 2.0.x
+* Changed crafting and returned item system, no more waiting for your range 30 to re-craft.
+
 #### 0.0.12 -
 * Updated for 1.1.x
 
