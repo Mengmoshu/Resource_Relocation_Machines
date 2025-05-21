@@ -8,8 +8,8 @@ local range_table = {
 
 local function build_search_position(machine_dir, mpx, mpy, i)
     return {
-        x = machine_dir == 2 and mpx + i or machine_dir == 6 and mpx - i or mpx,
-        y = machine_dir == 0 and mpy - i or machine_dir == 4 and mpy + i or mpy
+        x = machine_dir == 4 and mpx + i or machine_dir == 12 and mpx - i or mpx,
+        y = machine_dir == 0 and mpy - i or machine_dir == 8 and mpy + i or mpy
     }
 end
 
@@ -27,8 +27,9 @@ local function find_closest(machine_dir, machine_pos, machine_name, machine_surf
 end
 
 local function op_dir(d)
-    return (d + 4) % 8
+    return (d + 8) % 16
 end
+
 local function find_open_position(machine_dir, machine_pos, machine_name, machine_surface, res_name)
     machine_dir = op_dir(machine_dir) --Have to look behind the machine for an open position
     local distance = range_table[machine_name]
