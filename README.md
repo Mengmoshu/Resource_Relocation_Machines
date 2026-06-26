@@ -25,6 +25,9 @@ If there isn't an issue that I have participated in that shows the behavior is u
 This may happen because of your editor, or because the existing formatting is inconsistent, or you might dislike the existing formatting. However, this causes PRs to be slightly more difficult to review, and significantly harder to merge into unrelated branches. That second is really only a problem for me because I don't get around to working on this mod frequently any more.
     
 # Changelog:
+#### 0.0.14 -
+* Updated for 2.1.x
+
 #### 0.0.13 -
 * Updated for 2.0.x
 * Changed crafting and returned item system, no more waiting for your range 30 to re-craft.
